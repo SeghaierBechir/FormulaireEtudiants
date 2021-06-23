@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+  layout:decorate="template">
+<head>
+<meta charset="utf-8"/>
+<title>Scolarité</title>
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+<link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
+<link rel="stylesheet" type="text/css" href="../static/css/MyStyle.css" th:href="@{/css/MyStyle.css}"/>
+</head>
+<body layout:fragment="content">
+<p></p>
+  <div class="container spacer">
+    <a th:href="@{form}">Saisir un étudiant</a>
+  </div>
+  <div class="container spacer">
+    <form th:action="@{index}" method="get">
+      <div class="form-group">
+        <label>Key word:</label>
+        <input type="text" name="motCle" th:value="${motCle}">
+        <button type="submit" class="btn btn-primary">chercher</button>
+      </div>
+    </form>
+  </div>
+  <div class="container spacer">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th><th>Nom</th><th>Date de Naissance</th><th>Email</th><th>Photo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="e:${pageEtudiants.content}">
+          <td th:text="${e.id}"></td>
+          <td th:text="${e.nom}"></td>
+          <td th:text="${e.dateNaissance}"></td>
+          <td th:text="${e.email}"></td>
+          <td th:text="${e.photo}"></td>
+          <td>
+            <img class="img-circle" th:src="@{getPhoto(id=${e.id})}" width="100" height="100">
+          </td>
+          <td sec:authorize="hasRole('ROLE_ADMIN')"><a class="btn btn-danger" onclick="return confirm('Etes vous sûre')" th:href="@{supprimer(id=${e.id})}">Delete</a></td>
+          <td sec:authorize="hasRole('ROLE_ADMIN')"><a class="btn btn-warning" th:href="@{edit(id=${e.id})}">Edit</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="container">
+    <ul class="nav nav-pills">
+      <li th:each="p:${pages}" th:class="${p==pageCourante}?active:''" >
+        <a th:text="${p}" th:href="@{index(page=${p},motCle=${motCle})}"></a>
+      </li>
+    </ul>
+  </div>
+
+</body>
+</html>
